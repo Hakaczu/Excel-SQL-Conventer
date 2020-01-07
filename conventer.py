@@ -2,10 +2,12 @@ from openpyxl import load_workbook
 
 #TODO: wyczyscic kod 
 # config
-table_name = 'EbookPoint'
+table_name = 'Lorem'
+create_stmt = True
 first_row_as_col_names = True
-dest_file_name = 'zaczytani_2020_lista.xlsx'
+dest_file_name = 'x.xlsx'
 output_file_name = 'create.sql'
+#end config
 
 def createTable(table_name, columns):
     create = 'CREATE TABLE ' + table_name + '(id INT AUTO_INCREMENT PRIMARY KEY, '
@@ -68,8 +70,10 @@ print("MAX COL: " + str(max_col))
 print("MAX ROW: " + str(max_row))
 
 columnsNames = getColumnsNames(ws, first_row_as_col_names)
-create = createTable(table_name, columnsNames)
-convert += create
+
+if create_stmt == True:
+    create = createTable(table_name, columnsNames)
+    convert += create
 
 if first_row_as_col_names == True:
     
