@@ -2,8 +2,8 @@ from openpyxl import load_workbook
 
 #TODO: wyczyscic kod 
 # config
-table_name = 'Lorem'
-create_stmt = True
+table_name = 'sprzet2020'
+create_stmt = False
 first_row_as_col_names = True
 dest_file_name = 'x.xlsx'
 output_file_name = 'create.sql'
@@ -82,7 +82,6 @@ if first_row_as_col_names == True:
         for col in range (1, max_col + 1):
             print(str(ws.cell(row = row, column = col).value))
             val.append(str(ws.cell(row = row, column = col).value))
-        print(val)
         ins = insert(table_name, columnsNames, val)
         convert += ins
 
