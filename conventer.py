@@ -1,30 +1,28 @@
 from openpyxl import load_workbook
-
-#TODO: wyczyscic kod 
+ 
 # config
-table_name = 'sprzet2020'
+table_name = 'Table Name'
 create_stmt = False
 first_row_as_col_names = True
-dest_file_name = 'x.xlsx'
+dest_file_name = 'Excel.xlsx'
 output_file_name = 'create.sql'
 #end config
 
-def createTable(table_name, columns):
+def create_table(table_name, columns):
     create = 'CREATE TABLE ' + table_name + '(id INT AUTO_INCREMENT PRIMARY KEY, '
     col_len = len(columns)
-    print(col_len)
-    i = 1
-    for x in columns:
-        if(i == col_len):
-            stmt = x + ' VARCHAR(2000)'
+    col = 1
+    for column in columns:
+        if(col == col_len):
+            stmt = column + ' VARCHAR(2000)'
         else:
-            stmt = x + ' VARCHAR(2000), '
+            stmt = column + ' VARCHAR(2000), '
         create += stmt
-        i = i + 1
+        col =+ 1
     create += ');\n'
     return create
 
-def getColumnsNames(sheet, first_row_as_col_names):
+def get_columns_names(sheet, first_row_as_col_names):
     columns = []
 
     if first_row_as_col_names == True:
@@ -39,52 +37,50 @@ def getColumnsNames(sheet, first_row_as_col_names):
 def insert(table_name, columns, values):
     insert = 'INSERT INTO ' + table_name + '('
     col_len = len(columns)
-    i = 1
-    for col in columns:
-        if(i==col_len):
-            insert += col
+    col = 1
+    for column in columns:
+        if(col == col_len):
+            insert += column
         else:
-            insert += col + ', '
-        i = i + 1
+            insert += column + ', '
+        col += 1
     insert += ') VALUES('
-    i = 1
+    col = 1
     for val in values:
-        if(i==col_len):
+        if(col==col_len):
             insert += "'"+ val +"'"
         else: 
             insert += "'"+ val +"',"
-        i = i + 1
+        col += 1
     insert += ');\n'
     return insert
 
+if __name__ == "__main__":
+    workbook = load_workbook(filename = dest_file_name)
+    worksheet = workbook.active
+    max_col = worksheet.max_column
+    max_row = worksheet.max_row
+    convert = ''
 
-# load workbook
-wb = load_workbook(filename = dest_file_name)
-# load active sheet
-ws = wb.active
-max_col = ws.max_column
-max_row = ws.max_row
-convert = ''
+    print("MAX COL: " + str(max_col))
+    print("MAX ROW: " + str(max_row))
 
-print("MAX COL: " + str(max_col))
-print("MAX ROW: " + str(max_row))
+    columns_names = get_columns_names(worksheet, first_row_as_col_names)
 
-columnsNames = getColumnsNames(ws, first_row_as_col_names)
+    if create_stmt == True:
+        create = create_table(table_name, columns_names)
+        convert += create
 
-if create_stmt == True:
-    create = createTable(table_name, columnsNames)
-    convert += create
+    if first_row_as_col_names == True:
+        
+        for row in range(2, max_row + 1):
+            val = []
+            for col in range (1, max_col + 1):
+                print(str(worksheet.cell(row = row, column = col).value))
+                val.append(str(worksheet.cell(row = row, column = col).value))
+            ins = insert(table_name, columns_names, val)
+            convert += ins
 
-if first_row_as_col_names == True:
-    
-    for row in range(2, max_row + 1):
-        val = []
-        for col in range (1, max_col + 1):
-            print(str(ws.cell(row = row, column = col).value))
-            val.append(str(ws.cell(row = row, column = col).value))
-        ins = insert(table_name, columnsNames, val)
-        convert += ins
-
-f = open(output_file_name, "w")
-f.write(convert)
-f.close()
+    f = open(output_file_name, "w")
+    f.write(convert)
+    f.close()
