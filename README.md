@@ -1,2 +1,2 @@
 # ExcelToSQLConventer
- Convert Excel file to SQL file
+ Convert Excel file into SQL file
